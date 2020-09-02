@@ -1,2 +1,5 @@
 runtime: go114
-entrypoint: go run main.go
+entrypoint: go run *
+network:
+  forwarded_ports:
+    - 8081
