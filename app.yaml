@@ -1,2 +1,2 @@
 runtime: go114
-entrypoint: go run *
+entrypoint: go run main.go
