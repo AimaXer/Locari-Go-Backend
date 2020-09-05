@@ -9,24 +9,28 @@ import (
 	"github.com/gorilla/mux"
 )
 
-type Article struct {
+type Task struct {
 	Title   string `json:"Title"`
 	Desc    string `json:"desc"`
 	Content string `json:"content"`
 }
 
-type Articles []Article
+type Tasks []Task
 
-func allArticles(w http.ResponseWriter, r *http.Request) {
-	articles := Articles{
-		Article{Title: "Test title", Desc: "Test Desc", Content: "Hello World"},
+func allTasks(w http.ResponseWriter, r *http.Request) {
+	Tasks := Tasks{
+		Task{Title: "Test title", Desc: "Test Desc", Content: "Hello World"},
 	}
-	fmt.Println("Articles Endpoint")
-	json.NewEncoder(w).Encode(articles)
+	fmt.Println("Tasks Endpoint")
+	json.NewEncoder(w).Encode(Tasks)
 }
 
-func addArticles(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Post articles")
+func deleteTask(w http.ResponseWriter, r *http.Request){
+  fmt.Fprintf(w, "delete task")
+}
+
+func addTasks(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "Post Tasks")
 }
 
 func homePage(w http.ResponseWriter, r *http.Request) {
@@ -37,8 +41,9 @@ func handleRequest() {
 	myRouter := mux.NewRouter().StrictSlash(true)
 
 	myRouter.HandleFunc("/", homePage)
-	myRouter.HandleFunc("/articles", allArticles).Methods("GET")
-	myRouter.HandleFunc("/articles", addArticles).Methods("POST")
+	myRouter.HandleFunc("/Tasks", allTasks).Methods("GET")
+	myRouter.HandleFunc("/Tasks", addTasks).Methods("POST")
+	myRouter.HandleFunc("/Tasks", deleteTask).Methods("POST")
 	log.Fatal(http.ListenAndServe(":8080", myRouter))
 }
 
