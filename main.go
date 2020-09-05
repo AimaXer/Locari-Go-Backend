@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+  "github.com/jinzhu/gorm"
 )
 
 type Task struct {
