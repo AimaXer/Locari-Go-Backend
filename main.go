@@ -30,7 +30,7 @@ func addArticles(w http.ResponseWriter, r *http.Request) {
 }
 
 func homePage(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Homepage")
+	fmt.Fprintf(w, "Homepage-karolina")
 }
 
 func handleRequest() {
