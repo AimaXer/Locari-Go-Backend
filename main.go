@@ -8,6 +8,8 @@ import (
 
 	"github.com/gorilla/mux"
   "github.com/jinzhu/gorm"
+  "github.com/lib/pq"
+  "github.com/rs/cors"
 )
 
 type Task struct {
