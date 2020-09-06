@@ -32,7 +32,7 @@ func deleteTask(w http.ResponseWriter, r *http.Request){
 
 func addTasks(w http.ResponseWriter, r *http.Request) {
   vars := mux.Vars(r)
-  taskAdd = Task{
+  taskAdd := Task{
     "Title" : vars["title"],
     "desc" : vars["description"],
     "content" : vars["content"],
