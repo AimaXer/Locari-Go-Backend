@@ -48,7 +48,7 @@ func homePage(w http.ResponseWriter, r *http.Request) {
 func handleRequest() {
 	myRouter := mux.NewRouter().StrictSlash(true)
 	
-	db, err = gorm.Open( "postgres", "host=34.77.175.38 port=5432 user=postgres dbname=postgres sslmode=disable password=Maciek0808")
+	db, err := gorm.Open( "postgres", "host=34.77.175.38 port=5432 user=postgres dbname=postgres sslmode=disable password=Maciek0808")
 
   if err != nil {
 
