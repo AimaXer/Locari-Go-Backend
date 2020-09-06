@@ -31,7 +31,14 @@ func deleteTask(w http.ResponseWriter, r *http.Request){
 }
 
 func addTasks(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Post Tasks")
+  vars := mux.Vars(r)
+  taskAdd = Task{
+    "Title" : vars["title"],
+    "desc" : vars["description"],
+    "content" : vars["content"],
+  }
+  
+  db.Create(&taskAdd)
 }
 
 func homePage(w http.ResponseWriter, r *http.Request) {
@@ -54,7 +61,7 @@ func handleRequest() {
 	myRouter.HandleFunc("/", homePage)
 	myRouter.HandleFunc("/Tasks", allTasks).Methods("GET")
 	myRouter.HandleFunc("/Tasks", addTasks).Methods("POST")
-	myRouter.HandleFunc("/Tasks", deleteTask).Methods("POST")
+	myRouter.HandleFunc("/Tasks", deleteTask).Methods("DELETE")
 	log.Fatal(http.ListenAndServe(":8080", myRouter))
 }
 
