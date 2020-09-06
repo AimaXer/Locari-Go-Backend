@@ -21,7 +21,7 @@ type Task struct {
 type Tasks []Task
 
 func allTasks(w http.ResponseWriter, r *http.Request) {
-  tasks := []Task
+  tasks := Task
   db.Find(&task)
 	json.NewEncoder(w).Encode(&task)
 }
