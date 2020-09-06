@@ -21,11 +21,9 @@ type Task struct {
 type Tasks []Task
 
 func allTasks(w http.ResponseWriter, r *http.Request) {
-	Tasks := Tasks{
-		Task{Title: "Test title", Desc: "Test Desc", Content: "Hello World"},
-	}
-	fmt.Println("Tasks Endpoint")
-	json.NewEncoder(w).Encode(Tasks)
+  tasks := Task[]
+  db.Find(&task)
+	json.NewEncoder(w).Encode(&task)
 }
 
 func deleteTask(w http.ResponseWriter, r *http.Request){
@@ -42,7 +40,17 @@ func homePage(w http.ResponseWriter, r *http.Request) {
 
 func handleRequest() {
 	myRouter := mux.NewRouter().StrictSlash(true)
+	
+	db, err = gorm.Open( "postgres", "host=34.77.175.38 port=5432 user=postgres dbname=postgres sslmode=disable password=Maciek0808")
 
+  if err != nil {
+
+    panic("failed to connect database")
+
+  }
+  
+  defer db.close()
+  
 	myRouter.HandleFunc("/", homePage)
 	myRouter.HandleFunc("/Tasks", allTasks).Methods("GET")
 	myRouter.HandleFunc("/Tasks", addTasks).Methods("POST")
