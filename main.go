@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/bitly/go-simplejson"
 	"github.com/gorilla/mux"
 	_ "github.com/lib/pq"
 
@@ -18,24 +19,58 @@ var (
 	db *sql.DB
 )
 
-type Task struct {
-	ID      string `json:"id"`
-	Title   string `json:"title"`
-	Content string `json:"content"`
-}
-
 func handleRequest() {
 	myRouter := mux.NewRouter().StrictSlash(true)
 
 	myRouter.HandleFunc("/", homePage)
 	myRouter.HandleFunc("/Tasks", allTasks).Methods("GET")
+	myRouter.HandleFunc("/Users", allUsers).Methods("GET")
 	// myRouter.HandleFunc("/Tasks", addTasks).Methods("POST")
 	// myRouter.HandleFunc("/Tasks", deleteTask).Methods("DELETE")
 	log.Fatal(http.ListenAndServe(":8080", myRouter))
 }
+func allUsers(w http.ResponseWriter, r *http.Request) {
+	db, err := sql.Open("postgres", "host=34.77.175.38 user=aimaxer dbname=locari_db sslmode=disable password=Maciek0808")
+	jsons := simplejson.New()
+	jsons2 := simplejson.New()
+
+	if err != nil {
+		panic(err)
+	} else {
+		fmt.Printf("DB call get all Users\n")
+	}
+
+	defer db.Close()
+
+	rows, _ := db.Query(fmt.Sprintf("SELECT * FROM users"))
+	for rows.Next() {
+		var (
+			Username string
+			Password string
+			Token    string
+		)
+		if err := rows.Scan(&Username, &Password, &Token); err != nil {
+			log.Fatal(err)
+		}
+
+		jsons2.Set("Username", Username)
+		jsons2.Set("Password", Password)
+		jsons2.Set("Token", Token)
+	}
+	jsons.Set("Users", jsons2)
+
+	payload, err := jsons.MarshalJSON()
+	if err != nil {
+		log.Println(err)
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(payload)
+}
 
 func allTasks(w http.ResponseWriter, r *http.Request) {
 	db, err := sql.Open("postgres", "host=34.77.175.38 user=aimaxer dbname=locari_db sslmode=disable password=Maciek0808")
+	jsons := simplejson.New()
 
 	if err != nil {
 		panic(err)
@@ -54,9 +89,17 @@ func allTasks(w http.ResponseWriter, r *http.Request) {
 		if err := rows.Scan(&title, &content); err != nil {
 			log.Fatal(err)
 		}
-		// fmt.Fprintf(w, "%s - %s", title, content)
+
+		jsons.Set(title, content)
 	}
-	json.NewEncoder(w).Encode(&rows)
+
+	payload, err := jsons.MarshalJSON()
+	if err != nil {
+		log.Println(err)
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(payload)
 }
 
 func deleteTask(w http.ResponseWriter, r *http.Request) {
