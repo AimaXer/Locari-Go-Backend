@@ -122,10 +122,11 @@ func authUser(w http.ResponseWriter, r *http.Request) {
 		fmt.Printf("DB call auth user\n")
 	}
 
-	defer db.Close()
 	rows, _ := db.Query(fmt.Sprintf("SELECT * FROM users.users"))
-
+	defer db.Close()
+	
 	body, err := ioutil.ReadAll(r.Body)
+	
 	if err != nil {
 		fmt.Printf("ioutil")
 		panic(err.Error())
@@ -137,8 +138,10 @@ func authUser(w http.ResponseWriter, r *http.Request) {
 	userapp := msg.Usr
 	passapp := msg.Pass
 	found := false
-
+	
+	// fmt.Println(errdb)
 	for rows.Next() {
+		
 		var (
 			username string
 			password string
@@ -148,6 +151,7 @@ func authUser(w http.ResponseWriter, r *http.Request) {
 		if err := rows.Scan(&token, &username, &password, &email); err != nil {
 			log.Fatal(err)
 		}
+		
 		if userapp == username && passapp == password {
 			jsons2.Set("Token", token)
 			// fmt.Printf(userapp + " - " + username + " - " + passapp + " - " + password + "\n")
