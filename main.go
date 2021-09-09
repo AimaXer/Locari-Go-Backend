@@ -19,7 +19,11 @@ var (
 	db *sql.DB
 )
 
-var DB_IP = "127.0.0.1"
+var DB_IP = "localhost"
+var DB_PORT = "5432"
+var DB_NAME = "locari_db"
+var DB_USER = "postgres"
+var DB_PASS = "postgres"
 
 type bodyMessageUsers struct {
 	Usr  string `json:"usr"`
@@ -63,7 +67,7 @@ func handleRequest() {
 	log.Fatal(http.ListenAndServe(":8080", myRouter))
 }
 func getUserInfo(w http.ResponseWriter, r *http.Request) {
-	db, err := sql.Open("postgres", "host="+DB_IP+" port=5432 user=postgres dbname=locari_db sslmode=disable password=postgres")
+	db, err := sql.Open("postgres", "host="+DB_IP+" port="+DB_PORT+" user="+DB_USER+" dbname="+DB_NAME+" sslmode=disable password="+DB_PASS)
 	jsons := simplejson.New()
 
 	defer db.Close()
@@ -112,7 +116,7 @@ func getUserInfo(w http.ResponseWriter, r *http.Request) {
 }
 
 func authUser(w http.ResponseWriter, r *http.Request) {
-	db, err := sql.Open("postgres", "host="+DB_IP+" port=5432 user=postgres dbname=locari_db sslmode=disable password=postgres")
+	db, err := sql.Open("postgres", "host="+DB_IP+" port="+DB_PORT+" user="+DB_USER+" dbname="+DB_NAME+" sslmode=disable password="+DB_PASS)
 	jsons := simplejson.New()
 	jsons2 := simplejson.New()
 
@@ -121,8 +125,8 @@ func authUser(w http.ResponseWriter, r *http.Request) {
 	} else {
 		fmt.Printf("DB call auth user\n")
 	}
-
-	rows, _ := db.Query(fmt.Sprintf("SELECT * FROM users.users"))
+	
+	rows, errdb := db.Query(fmt.Sprintf("SELECT * FROM users.users"))
 	defer db.Close()
 	
 	body, err := ioutil.ReadAll(r.Body)
@@ -139,9 +143,8 @@ func authUser(w http.ResponseWriter, r *http.Request) {
 	passapp := msg.Pass
 	found := false
 	
-	// fmt.Println(errdb)
+	fmt.Println(errdb)
 	for rows.Next() {
-		
 		var (
 			username string
 			password string
@@ -172,7 +175,7 @@ func authUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func allUserTasks(w http.ResponseWriter, r *http.Request) {
-	db, err := sql.Open("postgres", "host="+DB_IP+" port=5432 user=postgres dbname=locari_db sslmode=disable password=postgres")
+	db, err := sql.Open("postgres", "host="+DB_IP+" port="+DB_PORT+" user="+DB_USER+" dbname="+DB_NAME+" sslmode=disable password="+DB_PASS)
 	jsons := simplejson.New()
 
 	if err != nil {
@@ -226,7 +229,7 @@ func allUserTasks(w http.ResponseWriter, r *http.Request) {
 }
 
 func deleteTask(w http.ResponseWriter, r *http.Request) {
-	db, err := sql.Open("postgres", "host="+DB_IP+" port=5432 user=postgres dbname=locari_db sslmode=disable password=postgres")
+	db, err := sql.Open("postgres", "host="+DB_IP+" port="+DB_PORT+" user="+DB_USER+" dbname="+DB_NAME+" sslmode=disable password="+DB_PASS)
 
 	if err != nil {
 		panic(err)
@@ -263,7 +266,7 @@ func deleteTask(w http.ResponseWriter, r *http.Request) {
 func addTasks(w http.ResponseWriter, r *http.Request) {
 	// db.Exec(fmt.Sprintf("INSERT INTO tasks (title, description, content) VALUES ('%s', '%s', '%s')", r.FormValue("title"), r.FormValue("description"), r.FormValue("content")))
 
-	db, err := sql.Open("postgres", "host="+DB_IP+" port=5432 user=postgres dbname=locari_db sslmode=disable password=postgres")
+	db, err := sql.Open("postgres", "host="+DB_IP+" port="+DB_PORT+" user="+DB_USER+" dbname="+DB_NAME+" sslmode=disable password="+DB_PASS)
 
 	if err != nil {
 		panic(err)
